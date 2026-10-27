@@ -1,0 +1,34 @@
+name: Daily local-data validation and rebuild
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 14 * * 1-5'
+
+permissions:
+  contents: read
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Validate reports and build local research tables
+        env:
+          PYTHONPATH: src
+        run: |
+          python -m goldlens.ingest.run --raw data/raw --db data/goldlens.duckdb
+          python -m goldlens.normalize.run --db data/goldlens.duckdb --contracts config/contracts.yml
+          python -m goldlens.analytics.run --db data/goldlens.duckdb --window 20 --min-periods 10 --min-volume-lots 1 --min-open-interest-lots 1
+          python -m goldlens.analytics.term_structure_run --db data/goldlens.duckdb
+          python -m goldlens.calendar.run --db data/goldlens.duckdb --contracts config/contracts.yml
+          python -m goldlens.backtest.run --db data/goldlens.duckdb --contracts config/contracts.yml --window 20 --min-periods 10 --zscore-threshold 2 --target-notional 20000000 --train-end 2026-03-31
+          python -m goldlens.backtest.cost_run --db data/goldlens.duckdb --costs config/costs.yml --min-volume-lots 1 --min-open-interest-lots 1
+          python -m goldlens.backtest.attribution_run --db data/goldlens.duckdb
+          python -m goldlens.alerts.run --db data/goldlens.duckdb --zscore-threshold 2
