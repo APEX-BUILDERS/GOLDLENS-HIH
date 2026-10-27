@@ -93,6 +93,18 @@ def walk_forward_backtest(
             * contracts[signal["right_symbol"]]["lot_unit_grams"]
             * (exit_row["right_price_per_gram"] - entry["right_price_per_gram"])
         )
+        left_entry_notional = sizing.left_notional
+        right_entry_notional = sizing.right_notional
+        left_exit_notional = (
+            sizing.left_lots
+            * contracts[signal["left_symbol"]]["lot_unit_grams"]
+            * exit_row["left_price_per_gram"]
+        )
+        right_exit_notional = (
+            sizing.right_lots
+            * contracts[signal["right_symbol"]]["lot_unit_grams"]
+            * exit_row["right_price_per_gram"]
+        )
         rows.append(
             {
                 **{key: signal[key] for key in SPREAD_SERIES_KEY},
@@ -102,6 +114,14 @@ def walk_forward_backtest(
                 "direction": signal["direction"],
                 "zscore": signal["zscore"],
                 **asdict(sizing),
+                "left_entry_notional": left_entry_notional,
+                "right_entry_notional": right_entry_notional,
+                "left_exit_notional": left_exit_notional,
+                "right_exit_notional": right_exit_notional,
+                "left_entry_volume_lots": entry["left_volume_lots"],
+                "right_entry_volume_lots": entry["right_volume_lots"],
+                "left_entry_open_interest_lots": entry["left_open_interest_lots"],
+                "right_entry_open_interest_lots": entry["right_open_interest_lots"],
                 "gross_pnl": gross_pnl,
                 "phase": "in_sample" if signal["Date"] <= pd.Timestamp(train_end) else "out_of_sample",
             }

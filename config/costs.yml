@@ -1,0 +1,28 @@
+# Every rate must be verified before a real net result can be reported.
+costs:
+  brokerage_rate: null
+  exchange_charge_rate: null
+  ctt_rate: 0.0001
+  gst_rate: 0.18
+  stamp_duty_rate: null
+  slippage_bps: null
+  margin_rate: null
+  thin_day_haircut_bps: null
+sources:
+  brokerage_rate: "TODO(verify): user broker schedule"
+  exchange_charge_rate: "TODO(verify): applicable MCX transaction-charge circular"
+  ctt_rate: "https://www.incometaxindia.gov.in/w/section-117-86"
+  gst_rate: "https://cbic-gst.gov.in/sectoral-faq.html"
+  stamp_duty_rate: "TODO(verify): client state and applicable schedule"
+  slippage_bps: "TODO(verify): execution study"
+  margin_rate: "TODO(verify): funding rate for margin capital"
+  thin_day_haircut_bps: "TODO(verify): execution study"
+as_of_dates:
+  brokerage_rate: "TODO(verify)"
+  exchange_charge_rate: "TODO(verify)"
+  ctt_rate: "2026-10-27"
+  gst_rate: "2026-10-27"
+  stamp_duty_rate: "TODO(verify)"
+  slippage_bps: "TODO(verify)"
+  margin_rate: "TODO(verify)"
+  thin_day_haircut_bps: "TODO(verify)"
