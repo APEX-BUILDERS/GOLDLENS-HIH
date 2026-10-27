@@ -1,7 +1,7 @@
 # GoldLens progress
 
-**Current step:** S5  
-**Last task summary:** S4 complete: six expiry-month-aligned contract pairs, liquidity flags, and past-only rolling z-scores were produced from real normalized data.  
+**Current step:** S6  
+**Last task summary:** S5 complete: real expiry-keyed term structures and raw-spread decompositions now separate purity, carry/roll-down, and residual components.  
 **Last agent/LLM used:** Codex
 
 ## Step status
@@ -13,7 +13,8 @@
 | S2 Cleaning and storage | done (tests green) | Conflict-safe overlap dedupe and `data/goldlens.duckdb` clean table. |
 | S3 Normalization engine | done (tests green) | `normalize/per_gram.py`, `normalize/purity.py`, and `normalize/run.py`; real results materialized as DuckDB table `normalized_futures`. |
 | S4 Spreads and z-scores | done (tests green) | `analytics/spreads.py`, `analytics/liquidity.py`, `analytics/zscore.py`, and `analytics/run.py`; 11,215 real rows in `spread_signals`. |
-| S5-S12 | not started | |
+| S5 Term structure and carry | done (tests green) | `analytics/term_structure.py` and `analytics/term_structure_run.py`; 8,740 term-structure rows and 11,215 decompositions stored in DuckDB. |
+| S6-S12 | not started | |
 
 ## Data facts
 
@@ -36,6 +37,7 @@
 - Normalization: `settlement_proxy` is converted using each contract's configured `quote_base_grams`, then expressed at 999 purity. `normalized_futures` retains `(Symbol, Expiry Date, Date)` and does not stitch contracts or expiries.
 - S4 expiry alignment: pairs join by common trading day and calendar expiry month, but retain both actual expiry dates. This creates all six pairs without treating GOLDM's early-month expiry as the same date as month-end contracts; S5 will model that carry gap explicitly.
 - S4 signals: rolling mean and standard deviation use only prior observations within each exact pair-of-expiries series. Default materialization uses a 20-observation window, 10 prior observations minimum, and both legs must have at least one reported volume lot and one open-interest lot to be marked liquid.
+- S5 carry/roll-down: each contract's same-day adjacent-expiry slope estimates the left leg's price change over the actual expiry-day gap to the right leg. The raw per-gram quote spread decomposes exactly as `purity component + carry/roll-down component + residual`; 44 real rows have no same-day adjacent curve point, so their carry and residual are left null rather than inferred.
 
 ## Commands that work
 
@@ -44,8 +46,9 @@
 - `$env:PYTHONPATH = 'src'; C:\Users\ASUS\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m goldlens.ingest.run --raw data/raw`
 - `$env:PYTHONPATH = 'src'; C:\Users\ASUS\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m goldlens.normalize.run --db data/goldlens.duckdb --contracts config/contracts.yml`
 - `$env:PYTHONPATH = 'src'; C:\Users\ASUS\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m goldlens.analytics.run --db data/goldlens.duckdb --window 20 --min-periods 10 --min-volume-lots 1 --min-open-interest-lots 1`
+- `$env:PYTHONPATH = 'src'; C:\Users\ASUS\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m goldlens.analytics.term_structure_run --db data/goldlens.duckdb`
 - `C:\Users\ASUS\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m pytest -q --basetemp .pytest-tmp` (the sandbox blocks pytest's default system-temp path)
 
 ## Next step
 
-S5: build the per-gram term structure, separate roll-down from curve shifts, and decompose raw spreads into purity, carry/roll-down, and residual components.
+S6: implement the contract calendar for upcoming expiries and listing/tender events, retaining unknown MCX dates as `TODO(verify)`.

@@ -11,6 +11,7 @@ REQUIRED_PRICE_COLUMNS = {
     "Symbol",
     "Date",
     "Expiry Date",
+    "quote_price_per_gram",
     "purity_adjusted_price_per_gram",
     "Volume(Lots)",
     "Open Interest(Lots)",
@@ -68,6 +69,7 @@ def _prepare_leg(prices: pd.DataFrame, side: str) -> pd.DataFrame:
             "Date",
             "expiry_month",
             "Expiry Date",
+            "quote_price_per_gram",
             "purity_adjusted_price_per_gram",
             "Volume(Lots)",
             "Open Interest(Lots)",
@@ -75,6 +77,7 @@ def _prepare_leg(prices: pd.DataFrame, side: str) -> pd.DataFrame:
     ].rename(
         columns={
             "Expiry Date": f"{side}_expiry_date",
+            "quote_price_per_gram": f"{side}_quote_price_per_gram",
             "purity_adjusted_price_per_gram": f"{side}_price_per_gram",
             "Volume(Lots)": f"{side}_volume_lots",
             "Open Interest(Lots)": f"{side}_open_interest_lots",

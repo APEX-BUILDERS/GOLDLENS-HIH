@@ -20,6 +20,7 @@ def _normalized_prices() -> pd.DataFrame:
                     "Symbol": symbol,
                     "Date": date,
                     "Expiry Date": pd.Timestamp(expiry),
+                    "quote_price_per_gram": price,
                     "purity_adjusted_price_per_gram": price,
                     "Volume(Lots)": 10 if symbol != "GOLDM" or index != 0 else 0,
                     "Open Interest(Lots)": 20,
