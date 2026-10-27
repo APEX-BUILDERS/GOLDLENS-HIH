@@ -1,0 +1,38 @@
+contracts:
+  GOLDM:
+    lot_unit_grams: 100
+    quote_base_grams: 10
+    purity: 995
+    expiry_window: "3rd-5th"
+    listing_rule: "TODO(verify)"
+    tender_start_rule: "TODO(verify)"
+    tender_end_rule: "TODO(verify)"
+  GOLDTEN:
+    lot_unit_grams: 10
+    quote_base_grams: 10
+    purity: 999
+    expiry_window: "27th-31st"
+    listing_rule: "TODO(verify)"
+    tender_start_rule: "TODO(verify)"
+    tender_end_rule: "TODO(verify)"
+  GOLDGUINEA:
+    lot_unit_grams: 8
+    quote_base_grams: 8
+    purity: 999
+    expiry_window: "27th-31st"
+    listing_rule: "TODO(verify)"
+    tender_start_rule: "TODO(verify)"
+    tender_end_rule: "TODO(verify)"
+  GOLDPETAL:
+    lot_unit_grams: 1
+    quote_base_grams: 1
+    purity: 999
+    expiry_window: "27th-31st"
+    listing_rule: "TODO(verify)"
+    tender_start_rule: "TODO(verify)"
+    tender_end_rule: "TODO(verify)"
+
+calendar_sources:
+  expiry_observation: "https://www.mcxindia.com/market-data/compare-products"
+  observed_as_of: "2026-10-27"
+  listing_and_tender: "TODO(verify): MCX contract specifications and circulars"
