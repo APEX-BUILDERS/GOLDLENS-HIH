@@ -1,28 +1,23 @@
-# Every rate must be verified before a real net result can be reported.
-costs:
-  brokerage_rate: null
-  exchange_charge_rate: null
-  ctt_rate: 0.0001
-  gst_rate: 0.18
-  stamp_duty_rate: null
-  slippage_bps: null
-  margin_rate: null
-  thin_day_haircut_bps: null
-sources:
-  brokerage_rate: "TODO(verify): user broker schedule"
-  exchange_charge_rate: "TODO(verify): applicable MCX transaction-charge circular"
-  ctt_rate: "https://www.incometaxindia.gov.in/w/section-117-86"
-  gst_rate: "https://cbic-gst.gov.in/sectoral-faq.html"
-  stamp_duty_rate: "TODO(verify): client state and applicable schedule"
-  slippage_bps: "TODO(verify): execution study"
-  margin_rate: "TODO(verify): funding rate for margin capital"
-  thin_day_haircut_bps: "TODO(verify): execution study"
-as_of_dates:
-  brokerage_rate: "TODO(verify)"
-  exchange_charge_rate: "TODO(verify)"
-  ctt_rate: "2026-10-27"
-  gst_rate: "2026-10-27"
-  stamp_duty_rate: "TODO(verify)"
-  slippage_bps: "TODO(verify)"
-  margin_rate: "TODO(verify)"
-  thin_day_haircut_bps: "TODO(verify)"
+# Values checked 2026-10-28. Published values remain TODO(verify) until checked
+# against the user's broker charge sheet; assumptions are explicit model choices.
+published_costs:
+  brokerage_rate: {value: 0.0003, type: published, source: "User-supplied broker schedule: 0.03% turnover capped per order", date_checked: "2026-10-28", status: "TODO(verify against broker charge sheet)"}
+  brokerage_cap_per_order: {value: 20.0, type: published, source: "User-supplied broker schedule: Rs 20 per executed order cap", date_checked: "2026-10-28", status: "TODO(verify against broker charge sheet)"}
+  exchange_charge_rate: {value: 0.000021, type: published, source: "User-supplied MCX non-agri futures transaction charge", date_checked: "2026-10-28", status: "TODO(verify against broker charge sheet)"}
+  sebi_fee_per_crore: {value: 10.0, type: published, source: "https://www.sebi.gov.in/sebi_data/attachdocs/feb-2022/1645790217515.pdf", date_checked: "2026-10-28", status: "TODO(verify against broker charge sheet)"}
+  ctt_rate: {value: 0.0001, type: published, source: "https://www.incometaxindia.gov.in/w/section-117-86", date_checked: "2026-10-28", status: "TODO(verify against broker charge sheet)"}
+  gst_rate: {value: 0.18, type: published, source: "https://cbic-gst.gov.in/sectoral-faq.html", date_checked: "2026-10-28", status: "TODO(verify against broker charge sheet)"}
+  stamp_duty_rate: {value: 0.00002, type: published, source: "https://upload.indiacode.nic.in/showfile?actid=AC_CEN_2_2_00036_189902_1523339055436&filename=a1899-2.pdf&type=actfile", date_checked: "2026-10-28", status: "TODO(verify against broker charge sheet; sources conflict)"}
+scenarios:
+  low:
+    margin_rate: {value: 0.06, type: assumption, source: "Model choice: low annual financing rate on entry notional", date_checked: "2026-10-28"}
+    slippage_bps: {value: {GOLDM: 1.0, GOLDTEN: 1.0, GOLDGUINEA: 2.0, GOLDPETAL: 2.0}, type: assumption, source: "Model choice: thin contracts carry higher slippage", date_checked: "2026-10-28"}
+    thin_day_haircut_bps: {value: {GOLDM: 2.0, GOLDTEN: 2.0, GOLDGUINEA: 4.0, GOLDPETAL: 4.0}, type: assumption, source: "Model choice: thin contracts carry higher thin-day haircut", date_checked: "2026-10-28"}
+  base:
+    margin_rate: {value: 0.10, type: assumption, source: "Model choice: base annual financing rate on entry notional", date_checked: "2026-10-28"}
+    slippage_bps: {value: {GOLDM: 2.0, GOLDTEN: 2.0, GOLDGUINEA: 5.0, GOLDPETAL: 5.0}, type: assumption, source: "Model choice: thin contracts carry higher slippage", date_checked: "2026-10-28"}
+    thin_day_haircut_bps: {value: {GOLDM: 5.0, GOLDTEN: 5.0, GOLDGUINEA: 10.0, GOLDPETAL: 10.0}, type: assumption, source: "Model choice: thin contracts carry higher thin-day haircut", date_checked: "2026-10-28"}
+  high:
+    margin_rate: {value: 0.16, type: assumption, source: "Model choice: high annual financing rate on entry notional", date_checked: "2026-10-28"}
+    slippage_bps: {value: {GOLDM: 4.0, GOLDTEN: 4.0, GOLDGUINEA: 10.0, GOLDPETAL: 10.0}, type: assumption, source: "Model choice: thin contracts carry higher slippage", date_checked: "2026-10-28"}
+    thin_day_haircut_bps: {value: {GOLDM: 10.0, GOLDTEN: 10.0, GOLDGUINEA: 20.0, GOLDPETAL: 20.0}, type: assumption, source: "Model choice: thin contracts carry higher thin-day haircut", date_checked: "2026-10-28"}

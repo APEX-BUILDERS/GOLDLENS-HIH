@@ -12,6 +12,8 @@ RATES = {
     "slippage_bps": 1.0,
     "margin_rate": 0.12,
     "thin_day_haircut_bps": 5.0,
+    "brokerage_cap_per_order": 20.0,
+    "sebi_fee_per_crore": 10.0,
 }
 
 
