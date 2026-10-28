@@ -4,7 +4,7 @@ import pandas as pd
 
 from goldlens.backtest.execution import next_trading_day_execution
 from goldlens.backtest.lots import matched_whole_lots
-from goldlens.backtest.walk_forward import walk_forward_decisions
+from goldlens.backtest.walk_forward import walk_forward_backtest, walk_forward_decisions
 
 
 def _spreads() -> pd.DataFrame:
@@ -57,3 +57,19 @@ def test_lot_sizing_whole_lots() -> None:
 
     assert (sizing.left_lots, sizing.right_lots) == (2, 20)
     assert sizing.left_notional == sizing.right_notional == 200_000.0
+
+
+def test_backtest_excludes_trade_that_crosses_train_test_boundary() -> None:
+    spreads = _spreads().iloc[:5].copy()
+    spreads["spread_bps"] = [1.0, 2.0, 8.0, 4.0, 5.0]
+    trades = walk_forward_backtest(
+        spreads,
+        {"GOLDM": {"lot_unit_grams": 1.0}, "GOLDTEN": {"lot_unit_grams": 1.0}},
+        window=3,
+        min_periods=2,
+        zscore_threshold=1.0,
+        target_notional=1_000.0,
+        train_end=pd.Timestamp("2025-03-26"),
+    )
+
+    assert trades.empty

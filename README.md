@@ -1,3 +1,5 @@
+![GoldLens logo](app/assets/logo.png)
+
 # GoldLens
 
 GoldLens is a research prototype for comparing the four MCX gold futures contracts—GOLDM, GOLDTEN, GOLDGUINEA, and GOLDPETAL—on a like-for-like basis. It is not a price-prediction system, an execution service, or a profit claim.

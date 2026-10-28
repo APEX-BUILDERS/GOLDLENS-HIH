@@ -72,7 +72,7 @@ def parse_report(path: str | Path) -> tuple[pd.DataFrame, int]:
         raise ValueError(f"expected one expiry per file; found {frame['Expiry Date'].nunique()}")
     if (frame["Date"] > frame["Expiry Date"]).any():
         raise ValueError("trade date occurs after expiry date")
-    weekend_rows = frame["Date"].dt.dayofweek >= 5
+    weekend_rows = frame["Date"].dt.day_of_week >= 5
     # Weekend rows are invalid under the project contract. Remove and report
     # them while retaining the independently valid rows in the same report.
     frame = frame.loc[~weekend_rows].copy()

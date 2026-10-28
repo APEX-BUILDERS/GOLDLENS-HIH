@@ -71,6 +71,13 @@ def walk_forward_backtest(
         exit_date = next_trading_day_execution(execution_date, series["Date"])
         if pd.isna(exit_date):
             continue
+        # A phase must contain an outcome observed entirely on its own side of
+        # the train boundary.  In particular, a pre-cutoff signal cannot use
+        # a post-cutoff entry or exit price in an in-sample result.
+        signal_is_in_sample = signal["Date"] <= pd.Timestamp(train_end)
+        outcome_is_in_sample = execution_date <= pd.Timestamp(train_end) and exit_date <= pd.Timestamp(train_end)
+        if signal_is_in_sample != outcome_is_in_sample:
+            continue
         entry = series.loc[series["Date"] == execution_date].iloc[0]
         exit_row = series.loc[series["Date"] == exit_date].iloc[0]
         sizing = matched_whole_lots(
@@ -123,7 +130,7 @@ def walk_forward_backtest(
                 "left_entry_open_interest_lots": entry["left_open_interest_lots"],
                 "right_entry_open_interest_lots": entry["right_open_interest_lots"],
                 "gross_pnl": gross_pnl,
-                "phase": "in_sample" if signal["Date"] <= pd.Timestamp(train_end) else "out_of_sample",
+                "phase": "in_sample" if signal_is_in_sample else "out_of_sample",
             }
         )
     return pd.DataFrame(rows)
