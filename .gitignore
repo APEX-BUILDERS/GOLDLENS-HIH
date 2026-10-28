@@ -5,3 +5,15 @@ __pycache__/
 data/goldlens.duckdb
 data/raw/*.csv
 .streamlit/secrets.toml
+
+.pytest-tmp*/
+.pytest_cache/
+.pytest-localappdata/
+__pycache__/
+.venv/
+data/raw/
+*.xls
+peek_output.txt
+inspect_summary.*
+contract_summary.txt
+app/*_backup.py
